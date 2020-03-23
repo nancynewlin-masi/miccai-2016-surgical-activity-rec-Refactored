@@ -1,7 +1,7 @@
 from __future__ import division, print_function
 
 import itertools
-import cPickle
+import pickle as cPickle
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -21,7 +21,7 @@ class Dataset(object):
             pkl_path: A string. A path to the standardized Pickle file.
         """
 
-        with open(pkl_path, 'r') as f:
+        with open(pkl_path, 'rb') as f:
             self.pkl_dict = cPickle.load(f)
 
         assert all(seq.shape[1] - 1 == self.input_size
@@ -117,7 +117,7 @@ class Dataset(object):
     @property
     def input_size(self):
         """ An integer: the number of inputs per time step. """
-        return self.all_data.values()[0].shape[1] - 1
+        return list(self.all_data.values())[0].shape[1] - 1
 
 
 def normalize_seq(seq):
@@ -178,7 +178,7 @@ def seq_ind_generator(num_seqs, shuffle=True):
     seq_inds = range(num_seqs)
     while True:
         if shuffle:
-            np.random.shuffle(seq_inds)
+            np.random.shuffle(list(seq_inds))
         for seq_ind in seq_inds:
             yield seq_ind
 
@@ -227,7 +227,7 @@ def sweep_generator(seq_list_list, batch_size, shuffle=False, num_sweeps=None):
     num_sweeps_visited = 0
     while num_sweeps_visited < num_sweeps:
 
-        new_seq_ind = [seq_ind_gen.next() for _ in xrange(batch_size)]
+        new_seq_ind = [seq_ind_gen.__next__() for _ in list(range(batch_size))]
         new_seq_durations = [seq_durations[i] for i in new_seq_ind]
         longest_duration = np.max(new_seq_durations)
         pad = lambda seq: np.pad(seq, [[0, longest_duration-len(seq)], [0, 0]],

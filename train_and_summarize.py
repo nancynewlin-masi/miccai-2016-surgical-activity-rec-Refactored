@@ -4,7 +4,7 @@ import os
 import time
 import argparse
 import shutil
-import cPickle
+import pickle as cPickle
 
 import matplotlib
 matplotlib.use('Agg')
@@ -209,11 +209,11 @@ def train(sess, model, optimizer, log_dir, batch_size, num_sweeps_per_summary,
                 print(line, file=f)
 
             label_path = os.path.join(log_dir, 'test_label_seqs.pkl')
-            with open(label_path, 'w') as f:
+            with open(label_path, 'wb') as f:
                 cPickle.dump(test_label_seqs, f)
 
             pred_path = os.path.join(log_dir, 'test_prediction_seqs.pkl')
-            with open(pred_path, 'w') as f:
+            with open(pred_path, 'wb') as f:
                 cPickle.dump(test_prediction_seqs, f)
 
             vis_filename = 'test_visualizations_%06d.png' % num_sweeps_visited
@@ -229,7 +229,7 @@ def train(sess, model, optimizer, log_dir, batch_size, num_sweeps_per_summary,
         if num_sweeps_visited % num_sweeps_per_save == 0:
             saver.save(sess, os.path.join(log_dir, 'model.ckpt'))
 
-        train_inputs, train_resets, train_labels = train_gen.next()
+        train_inputs, train_resets, train_labels = train_gen.__next__()
         # We squeeze here because otherwise the targets would have shape
         # [batch_size, duration, 1, num_classes].
         train_targets = data.one_hot(train_labels, model.target_size)

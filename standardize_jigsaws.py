@@ -5,7 +5,7 @@ import argparse
 import itertools
 
 import numpy as np
-import cPickle
+import pickle as cPickle
 
 import matplotlib
 matplotlib.use('Agg')
@@ -43,7 +43,7 @@ KINEMATICS_COL_NAMES = ['pos_x', 'pos_y', 'pos_z', 'vel_x',
 
 LABELS_USECOLS = [0, 1, 2]
 LABELS_COL_NAMES = ['start_frame', 'end_frame', 'string_label']
-LABELS_CONVERTERS = {2: lambda string_label: int(string_label.replace('G', ''))}
+LABELS_CONVERTERS = {2: lambda string_label: int(string_label.replace('G'.encode(), ''.encode()))}
 
 STANDARDIZED_COL_NAMES = KINEMATICS_COL_NAMES + ['label']
 
@@ -223,7 +223,7 @@ def main():
         user_to_trial_names=user_to_trial_names,
         all_trial_names=all_trial_names, all_data=all_data)
     standardized_data_path = os.path.join(args.data_dir, args.data_filename)
-    with open(standardized_data_path, 'w') as f:
+    with open(standardized_data_path, 'wb') as f:
         cPickle.dump(export_dict, f)
     print('Saved standardized data file %s.' % standardized_data_path)
     print()
