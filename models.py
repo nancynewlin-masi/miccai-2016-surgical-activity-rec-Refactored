@@ -127,6 +127,9 @@ class LSTM(object):
                                 initializer=tf.constant_initializer(0.0))
             return b
 
+        # 12:35 NANCY: trying to get a 2 dimensional representation. Hidden_layer size should be changed to 1 so that it will be 2 here (2* hidden layer size)
+        np.savetxt('/home/local/VANDERBILT/newlinnr/git_repositories/miccai-2016-surgical-activity-rec-Refactored-master/latentspace.csv', c_prev_and_m_prev, delimiter=',', fmt='%d')
+        
         x = x_and_r[:, :block_input_size]
         r = tf.cast(x_and_r[:, block_input_size], tf.bool)
 
